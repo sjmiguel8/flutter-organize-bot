@@ -1,16 +1,14 @@
-# fluttertry
+# Organize Bot
 
-A new Flutter project.
+## Download
 
-## Getting Started
+### macOS
+- [Download Latest Release](https://fluttertry.s3.amazonaws.com/OrganizeBot.dmg)
+- Minimum Requirements: macOS 10.15 or later
+- Apple Silicon and Intel processors supported
 
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+### Installation
+1. Download OrganizeBot.dmg
+2. Open the DMG file
+3. Drag Organize Bot to your Applications folder
+4. Open the app (Right-click > Open for first-time launch)
