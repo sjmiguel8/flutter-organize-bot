@@ -1,12 +1,22 @@
 version: 1
 frontend:
   phases:
+    preBuild:
+      commands:
+        - brew install create-dmg
+        - flutter config --enable-macos-desktop
     build:
       commands:
-        - flutter build web
+        - flutter build macos
+        - create-dmg \
+          --volname "Organize Bot" \
+          --window-pos 200 120 \
+          --window-size 800 400 \
+          --icon-size 100 \
+          --app-drop-link 600 185 \
+          "OrganizeBot.dmg" \
+          "build/macos/Build/Products/Release/fluttertry.app"
   artifacts:
-    baseDirectory: build/web
+    baseDirectory: .
     files:
-      - '**/*'
-  cache:
-    paths: [] 
+      - OrganizeBot.dmg 

@@ -1,0 +1,43 @@
+name: macOS Build
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  build:
+    runs-on: macos-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - uses: subosito/flutter-action@v2
+      with:
+        channel: 'stable'
+        architecture: x64
+    
+    - name: Install create-dmg
+      run: brew install create-dmg
+    
+    - name: Build macOS
+      run: |
+        flutter config --enable-macos-desktop
+        flutter build macos
+        
+    - name: Create DMG
+      run: |
+        create-dmg \
+          --volname "Organize Bot" \
+          --window-pos 200 120 \
+          --window-size 800 400 \
+          --icon-size 100 \
+          --app-drop-link 600 185 \
+          "OrganizeBot.dmg" \
+          "build/macos/Build/Products/Release/fluttertry.app"
+          
+    - name: Create Release
+      uses: softprops/action-gh-release@v1
+      with:
+        files: OrganizeBot.dmg
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} 
