@@ -28,30 +28,16 @@ class _SecondPageState extends State<SecondPage> {
 
     setState(() {
       _isLoading = true;
+      _result = '';
     });
 
-    String prompt = '';
-    switch (_selectedAnalysis) {
-      case 'Summarize':
-        prompt =
-            'Please summarize the following text:\n${_textController.text}';
-      case 'Key Points':
-        prompt =
-            'Extract the key points from this text:\n${_textController.text}';
-      case 'Pros and Cons':
-        prompt =
-            'Provide 5 arguments for and 5 arguments against the following text:\n${_textController.text}';
-      case 'Expand':
-        prompt =
-            'Please expand on and provide more details about the following text:\n${_textController.text}';
-    }
-
     try {
-      final response = await _openAIService.getResponse(prompt);
+      final response = await _openAIService.getResponse(_textController.text);
       setState(() {
         _result = response;
       });
     } catch (e) {
+      print('Error in _analyzeText: $e');
       setState(() {
         _result = 'Error analyzing text: $e';
       });

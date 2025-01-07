@@ -1,11 +1,15 @@
 import 'package:dart_openai/dart_openai.dart';
 import '../config/.env';
+import 'package:flutter/foundation.dart' show kIsWeb;
 
 class OpenAIService {
   static const String _model = 'gpt-3.5-turbo';
 
   OpenAIService() {
-    OpenAI.apiKey = APIKeys.openAI;
+    // For desktop, always use the .env file
+    if (!kIsWeb) {
+      OpenAI.apiKey = APIKeys.openAI;
+    }
   }
 
   Future<String> getResponse(String message) async {
@@ -30,6 +34,7 @@ class OpenAIService {
       }
       return text;
     } catch (e) {
+      print('OpenAI Error: $e'); // Add this for debugging
       throw Exception('Error: Unable to get response from AI: $e');
     }
   }

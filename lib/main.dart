@@ -4,6 +4,7 @@ import 'screens/chat_page.dart';
 import 'models/task.dart';
 import 'services/openai_service.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'screens/third_page.dart';
 
 void main() {
   runApp(const MyApp());
@@ -114,24 +115,44 @@ class MainLayout extends StatelessWidget {
       bottomNavigationBar: Container(
         height: 60,
         color: Colors.black54,
-        child: InkWell(
-          onTap: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => const SecondPage()),
-            );
-          },
-          child: Center(
-            child: Text(
-              'Next →',
-              style: TextStyle(
-                color: Colors.white,
-                fontSize: 25,
-                fontWeight: FontWeight.bold,
-                letterSpacing: 2.5,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
+            InkWell(
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const SecondPage()),
+                );
+              },
+              child: Text(
+                'Next →',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 25,
+                  fontWeight: FontWeight.bold,
+                  letterSpacing: 2.5,
+                ),
               ),
             ),
-          ),
+            InkWell(
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const ThirdPage()),
+                );
+              },
+              child: Text(
+                '3',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 25,
+                  fontWeight: FontWeight.bold,
+                  letterSpacing: 2.5,
+                ),
+              ),
+            ),
+          ],
         ),
       ),
     );

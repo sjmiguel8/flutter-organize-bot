@@ -1,4 +1,4 @@
-name: Deploy to GitHub Pages
+name: Web Deploy
 
 on:
   push:
@@ -7,18 +7,17 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-
+    
     steps:
-      - uses: actions/checkout@v2
-      - uses: subosito/flutter-action@v1
-      
-      - name: Build Web
-        run: |
-          flutter pub get
-          flutter build web --base-href "/your-repo-name/"
-          
-      - name: Deploy
-        uses: peaceiris/actions-gh-pages@v3
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./build/web 
+    - uses: actions/checkout@v2
+    
+    - uses: subosito/flutter-action@v2
+      with:
+        channel: 'stable'
+    
+    - name: Build Web
+      env:
+        OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+      run: |
+        flutter config --enable-web
+        flutter build web --dart-define=OPENAI_API_KEY=$OPENAI_API_KEY 
