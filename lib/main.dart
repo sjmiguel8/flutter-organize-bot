@@ -35,6 +35,11 @@ class MyApp extends StatelessWidget {
           color: Colors.white10,
         ),
       ),
+      initialRoute: '/',
+      routes: {
+        '/': (context) => const MainLayout(),
+        '/emotions': (context) => EmotionAnalysisScreen(),
+      },
       home: const MainLayout(),
     );
   }
@@ -131,15 +136,7 @@ class MainLayout extends StatelessWidget {
                   MaterialPageRoute(builder: (context) => const SecondPage()),
                 );
               },
-              child: Text(
-                'Next →',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 25,
-                  fontWeight: FontWeight.bold,
-                  letterSpacing: 2.5,
-                ),
-              ),
+              child: Text('Next →'),
             ),
             InkWell(
               onTap: () {
@@ -148,17 +145,8 @@ class MainLayout extends StatelessWidget {
                   MaterialPageRoute(builder: (context) => const ThirdPage()),
                 );
               },
-              child: Text(
-                '3',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 25,
-                  fontWeight: FontWeight.bold,
-                  letterSpacing: 2.5,
-                ),
-              ),
+              child: Text('3'),
             ),
-            // New button for Emotion Analysis
             InkWell(
               onTap: () {
                 Navigator.push(
@@ -166,15 +154,7 @@ class MainLayout extends StatelessWidget {
                   MaterialPageRoute(builder: (context) => EmotionAnalysisScreen()),
                 );
               },
-              child: Text(
-                'Emotions',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 25,
-                  fontWeight: FontWeight.bold,
-                  letterSpacing: 2.5,
-                ),
-              ),
+              child: Text('Emotions'),
             ),
           ],
         ),
