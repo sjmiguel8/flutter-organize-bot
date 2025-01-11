@@ -18,12 +18,12 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 # of the product and file versions while build-number is used as the build suffix.
 version: 1.0.0+1
 
-platforms:
-  macos:
-    enable: true
+# platforms:
+#   macos:
+#     enable: true
 
 environment:
-  sdk: ^3.6.0
+  sdk: '>=3.6.0 <4.0.0'
 
 # Dependencies specify other packages that your package needs in order to work.
 # To automatically upgrade your package dependencies to the latest versions
@@ -40,6 +40,8 @@ dependencies:
   cupertino_icons: ^1.0.8
   dart_openai: ^4.0.0
   google_fonts: ^6.1.0
+  image_picker: ^1.0.4
+  image: ^4.1.7
 
 dev_dependencies:
   flutter_test:
@@ -96,3 +98,6 @@ flutter:
 
   assets:
     - lib/config/.env
+
+platforms:
+  web: true

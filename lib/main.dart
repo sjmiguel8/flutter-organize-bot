@@ -5,6 +5,7 @@ import 'models/task.dart';
 import 'services/openai_service.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'screens/third_page.dart';
+import 'screens/emotion_analysis_screen.dart';
 
 void main() {
   runApp(const MyApp());
@@ -34,7 +35,7 @@ class MyApp extends StatelessWidget {
           color: Colors.white10,
         ),
       ),
-      home: MainLayout(),
+      home: const MainLayout(),
     );
   }
 }
@@ -45,7 +46,6 @@ class MainLayout extends StatelessWidget {
   void _onDestinationSelected(BuildContext context, int index) {
     switch (index) {
       case 0:
-        // Already on home
         Navigator.pop(context);
         break;
       case 1:
@@ -62,6 +62,13 @@ class MainLayout extends StatelessWidget {
           MaterialPageRoute(builder: (context) => const SecondPage()),
         );
         break;
+      case 3:
+        Navigator.pop(context);
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => EmotionAnalysisScreen()),
+        );
+        break;
     }
   }
 
@@ -70,8 +77,7 @@ class MainLayout extends StatelessWidget {
     return Scaffold(
       drawer: NavigationDrawer(
         backgroundColor: Colors.black87,
-        onDestinationSelected: (index) =>
-            _onDestinationSelected(context, index),
+        onDestinationSelected: (index) => _onDestinationSelected(context, index),
         children: [
           DrawerHeader(
             decoration: BoxDecoration(
@@ -94,18 +100,18 @@ class MainLayout extends StatelessWidget {
             icon: Icon(Icons.star, color: Colors.white),
             label: Text('Fun Page', style: TextStyle(color: Colors.white)),
           ),
+          NavigationDrawerDestination(
+            icon: Icon(Icons.face, color: Colors.white),
+            label: Text('Emotion Analysis', style: TextStyle(color: Colors.white)),
+          ),
         ],
       ),
       body: Row(
         children: [
-          // Left side - Counter button
           Expanded(
             flex: 1,
-            child: const MyHomePage(
-              title: 'Organize Bot',
-            ),
+            child: const MyHomePage(title: 'Organize Bot'),
           ),
-          // Right side - Task tracker
           Expanded(
             flex: 1,
             child: TaskSection(),
@@ -152,6 +158,24 @@ class MainLayout extends StatelessWidget {
                 ),
               ),
             ),
+            // New button for Emotion Analysis
+            InkWell(
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => EmotionAnalysisScreen()),
+                );
+              },
+              child: Text(
+                'Emotions',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 25,
+                  fontWeight: FontWeight.bold,
+                  letterSpacing: 2.5,
+                ),
+              ),
+            ),
           ],
         ),
       ),
@@ -161,7 +185,6 @@ class MainLayout extends StatelessWidget {
 
 class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key, required this.title});
-
   final String title;
 
   @override
@@ -179,11 +202,12 @@ class _MyHomePageState extends State<MyHomePage> {
 
     setState(() {
       _messages.insert(
-          0,
-          ChatMessage(
-            text: message,
-            isUser: true,
-          ));
+        0,
+        ChatMessage(
+          text: message,
+          isUser: true,
+        ),
+      );
       _messageController.clear();
       _isLoading = true;
     });
@@ -192,39 +216,28 @@ class _MyHomePageState extends State<MyHomePage> {
       final response = await _openAIService.getResponse(message);
       setState(() {
         _messages.insert(
-            0,
-            ChatMessage(
-              text: response,
-              isUser: false,
-            ));
+          0,
+          ChatMessage(
+            text: response,
+            isUser: false,
+          ),
+        );
       });
     } catch (e) {
       setState(() {
         _messages.insert(
-            0,
-            ChatMessage(
-              text: 'Error: $e',
-              isUser: false,
-            ));
+          0,
+          ChatMessage(
+            text: 'Error: $e',
+            isUser: false,
+          ),
+        );
       });
     } finally {
       setState(() {
         _isLoading = false;
       });
     }
-  }
-
-  void _startNewConversation() {
-    setState(() {
-      _messages.clear();
-      _messages.insert(
-        0,
-        ChatMessage(
-          text: "Hello! I'm your AI assistant. How can I help you today?",
-          isUser: false,
-        ),
-      );
-    });
   }
 
   @override
@@ -234,10 +247,7 @@ class _MyHomePageState extends State<MyHomePage> {
         backgroundColor: Colors.black87,
         title: Text(
           widget.title,
-          style: const TextStyle(
-            color: Colors.white,
-            fontWeight: FontWeight.bold,
-          ),
+          style: const TextStyle(color: Colors.white),
         ),
       ),
       body: Container(
@@ -253,139 +263,41 @@ class _MyHomePageState extends State<MyHomePage> {
         ),
         child: Column(
           children: [
-            // Top section with cards
             Expanded(
-              flex: 0,
-              child: SingleChildScrollView(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
-                    Card(
-                        // Your existing AI Powered App card
-                        ),
-                    Card(
-                        // Your existing Push The Button card
-                        ),
-                    Card(
-                        // Your existing Enter card
-                        ),
-                  ],
-                ),
+              child: ListView.builder(
+                reverse: true,
+                itemCount: _messages.length,
+                itemBuilder: (context, index) {
+                  final message = _messages[index];
+                  return ChatBubble(message: message);
+                },
               ),
             ),
-            // Bottom section with chat
-            Expanded(
-              flex: 4,
-              child: Container(
-                margin: const EdgeInsets.all(8.0),
-                decoration: BoxDecoration(
-                  color: Colors.black54,
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                child: Column(
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Text(
-                        '',
-                        style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                              color: Colors.white,
-                            ),
-                      ),
-                    ),
-                    Expanded(
-                      child: ListView.builder(
-                        reverse: true,
-                        itemCount: _messages.length,
-                        padding: const EdgeInsets.all(8.0),
-                        itemBuilder: (context, index) {
-                          final message = _messages[index];
-                          return Container(
-                            margin: const EdgeInsets.symmetric(vertical: 4.0),
-                            child: Row(
-                              mainAxisAlignment: message.isUser
-                                  ? MainAxisAlignment.end
-                                  : MainAxisAlignment.start,
-                              children: [
-                                Container(
-                                  constraints: BoxConstraints(
-                                    maxWidth:
-                                        MediaQuery.of(context).size.width * 0.3,
-                                  ),
-                                  padding: const EdgeInsets.symmetric(
-                                    horizontal: 16.0,
-                                    vertical: 10.0,
-                                  ),
-                                  decoration: BoxDecoration(
-                                    color: message.isUser
-                                        ? Colors.deepPurple
-                                        : Colors.grey[800],
-                                    borderRadius: BorderRadius.circular(20),
-                                  ),
-                                  child: Text(
-                                    message.text,
-                                    style: const TextStyle(
-                                      color: Colors.white,
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          );
-                        },
-                      ),
-                    ),
-                    if (_isLoading)
-                      const Padding(
-                        padding: EdgeInsets.all(8.0),
-                        child: CircularProgressIndicator(),
-                      ),
-                    Container(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Row(
-                        children: [
-                          Expanded(
-                            child: TextField(
-                              controller: _messageController,
-                              style: const TextStyle(color: Colors.white),
-                              decoration: const InputDecoration(
-                                hintText: 'Type a message...',
-                                hintStyle: TextStyle(color: Colors.white70),
-                                border: OutlineInputBorder(
-                                  borderSide: BorderSide(color: Colors.white24),
-                                ),
-                                enabledBorder: OutlineInputBorder(
-                                  borderSide: BorderSide(color: Colors.white24),
-                                ),
-                              ),
-                              onSubmitted: _sendMessage,
-                            ),
-                          ),
-                          IconButton(
-                            icon: const Icon(Icons.send, color: Colors.white),
-                            onPressed: () =>
-                                _sendMessage(_messageController.text),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
+            if (_isLoading)
+              const Padding(
+                padding: EdgeInsets.all(8.0),
+                child: CircularProgressIndicator(),
               ),
-            ),
-          ],
-        ),
-      ),
-      floatingActionButton: FloatingActionButton.extended(
-        onPressed: _startNewConversation,
-        backgroundColor: const Color.fromARGB(255, 120, 24, 123),
-        label: const Row(
-          children: [
-            Icon(Icons.chat_bubble_outline, color: Colors.white),
-            SizedBox(width: 10),
-            Text(
-              'New Chat',
-              style: TextStyle(color: Colors.white),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: TextField(
+                      controller: _messageController,
+                      decoration: const InputDecoration(
+                        hintText: 'Type a message...',
+                        border: OutlineInputBorder(),
+                      ),
+                      onSubmitted: _sendMessage,
+                    ),
+                  ),
+                  IconButton(
+                    icon: const Icon(Icons.send),
+                    onPressed: () => _sendMessage(_messageController.text),
+                  ),
+                ],
+              ),
             ),
           ],
         ),
@@ -404,16 +316,35 @@ class ChatMessage {
   });
 }
 
-class MyCard extends StatelessWidget {
-  const MyCard({super.key, required this.title, required this.value});
+class ChatBubble extends StatelessWidget {
+  final ChatMessage message;
 
-  final String title;
-  final String value;
+  const ChatBubble({super.key, required this.message});
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      child: Text('Hello'),
+    return Container(
+      margin: const EdgeInsets.symmetric(vertical: 4.0, horizontal: 8.0),
+      child: Row(
+        mainAxisAlignment:
+            message.isUser ? MainAxisAlignment.end : MainAxisAlignment.start,
+        children: [
+          Container(
+            constraints: BoxConstraints(
+              maxWidth: MediaQuery.of(context).size.width * 0.7,
+            ),
+            padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 10.0),
+            decoration: BoxDecoration(
+              color: message.isUser ? Colors.blue : Colors.grey[700],
+              borderRadius: BorderRadius.circular(20),
+            ),
+            child: Text(
+              message.text,
+              style: const TextStyle(color: Colors.white),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
@@ -453,44 +384,6 @@ class _TaskSectionState extends State<TaskSection> {
     });
   }
 
-  void _editTask(String id) {
-    final task = _tasks.firstWhere((task) => task.id == id);
-    showDialog(
-      context: context,
-      builder: (context) {
-        final TextEditingController editController =
-            TextEditingController(text: task.title);
-        return AlertDialog(
-          title: const Text('Edit Task'),
-          content: TextField(
-            controller: editController,
-            decoration: const InputDecoration(
-              hintText: 'Edit task',
-            ),
-            autofocus: true,
-          ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(context),
-              child: const Text('Cancel'),
-            ),
-            TextButton(
-              onPressed: () {
-                if (editController.text.isNotEmpty) {
-                  setState(() {
-                    task.title = editController.text;
-                  });
-                  Navigator.pop(context);
-                }
-              },
-              child: const Text('Save'),
-            ),
-          ],
-        );
-      },
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -502,77 +395,53 @@ class _TaskSectionState extends State<TaskSection> {
             style: Theme.of(context).textTheme.headlineMedium,
           ),
           Expanded(
-            child: Column(
+            child: ListView.builder(
+              itemCount: _tasks.length,
+              itemBuilder: (context, index) {
+                final task = _tasks[index];
+                return ListTile(
+                  leading: IconButton(
+                    icon: Icon(
+                      task.isCompleted
+                          ? Icons.check_box
+                          : Icons.check_box_outline_blank,
+                      color: Colors.white,
+                    ),
+                    onPressed: () => _toggleTask(task.id),
+                  ),
+                  title: Text(
+                    task.title,
+                    style: TextStyle(
+                      color: Colors.white,
+                      decoration:
+                          task.isCompleted ? TextDecoration.lineThrough : null,
+                    ),
+                  ),
+                  trailing: IconButton(
+                    icon: const Icon(Icons.delete, color: Colors.white),
+                    onPressed: () => _deleteTask(task.id),
+                  ),
+                );
+              },
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Row(
               children: [
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Row(
-                    children: [
-                      Expanded(
-                        child: TextField(
-                          controller: _taskController,
-                          style: const TextStyle(color: Colors.white),
-                          decoration: const InputDecoration(
-                            hintText: 'Enter new task',
-                            hintStyle: TextStyle(color: Colors.white54),
-                            border: OutlineInputBorder(
-                              borderSide: BorderSide(color: Colors.white24),
-                            ),
-                            enabledBorder: OutlineInputBorder(
-                              borderSide: BorderSide(color: Colors.white24),
-                            ),
-                          ),
-                          onSubmitted: _addTask,
-                        ),
-                      ),
-                      IconButton(
-                        icon: const Icon(Icons.add, color: Colors.white),
-                        onPressed: () => _addTask(_taskController.text),
-                      ),
-                    ],
+                Expanded(
+                  child: TextField(
+                    controller: _taskController,
+                    decoration: const InputDecoration(
+                      hintText: 'Add a task',
+                      border: OutlineInputBorder(),
+                    ),
+                    onSubmitted: _addTask,
                   ),
                 ),
-                Expanded(
-                  child: ListView.builder(
-                    itemCount: _tasks.length,
-                    itemBuilder: (context, index) {
-                      final task = _tasks[index];
-                      return ListTile(
-                        leading: IconButton(
-                          icon: Icon(
-                            task.isCompleted
-                                ? Icons.check_box
-                                : Icons.check_box_outline_blank,
-                            color: Colors.white,
-                          ),
-                          onPressed: () => _toggleTask(task.id),
-                        ),
-                        title: Text(
-                          task.title,
-                          style: TextStyle(
-                            color: Colors.white,
-                            decoration: task.isCompleted
-                                ? TextDecoration.lineThrough
-                                : null,
-                          ),
-                        ),
-                        trailing: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            IconButton(
-                              icon: const Icon(Icons.edit, color: Colors.white),
-                              onPressed: () => _editTask(task.id),
-                            ),
-                            IconButton(
-                              icon:
-                                  const Icon(Icons.delete, color: Colors.white),
-                              onPressed: () => _deleteTask(task.id),
-                            ),
-                          ],
-                        ),
-                      );
-                    },
-                  ),
+                IconButton(
+                  icon: const Icon(Icons.add, color: Colors.white),
+                  onPressed: () => _addTask(_taskController.text),
                 ),
               ],
             ),
