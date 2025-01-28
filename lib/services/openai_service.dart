@@ -6,10 +6,8 @@ class OpenAIService {
   static const String _model = 'gpt-3.5-turbo';
 
   OpenAIService() {
-    // For desktop, always use the .env file
-    if (!kIsWeb) {
-      OpenAI.apiKey = APIKeys.openAI;
-    }
+    // Set API key for both web and desktop platforms
+    OpenAI.apiKey = APIKeys.openAI;
   }
 
   Future<String> getResponse(String message) async {

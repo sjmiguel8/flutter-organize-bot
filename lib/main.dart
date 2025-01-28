@@ -40,7 +40,6 @@ class MyApp extends StatelessWidget {
         '/': (context) => const MainLayout(),
         '/emotions': (context) => EmotionAnalysisScreen(),
       },
-      home: const MainLayout(),
     );
   }
 }
@@ -124,8 +123,8 @@ class MainLayout extends StatelessWidget {
         ],
       ),
       bottomNavigationBar: Container(
-        height: 60,
-        color: Colors.black54,
+        height: 70,
+        color: Colors.black87,
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
