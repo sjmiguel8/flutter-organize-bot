@@ -10,4 +10,4 @@ aws s3 rm s3://fluttertryweb/ --recursive
 aws s3 sync build/web/ s3://fluttertryweb/
 
 echo "Deployment complete!"
-echo "Your app should be available at: http://fluttertryweb.s3-website-[your-region].amazonaws.com" 
+echo "Your app should be available at: http://fluttertryweb.s3-website.us-east-2.amazonaws.com/" 

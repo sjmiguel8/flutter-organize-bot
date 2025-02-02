@@ -135,7 +135,7 @@ class MainLayout extends StatelessWidget {
                   MaterialPageRoute(builder: (context) => const SecondPage()),
                 );
               },
-              child: Text('Next →'),
+              child: Text('Document Analysis'),
             ),
             InkWell(
               onTap: () {
@@ -144,7 +144,7 @@ class MainLayout extends StatelessWidget {
                   MaterialPageRoute(builder: (context) => const ThirdPage()),
                 );
               },
-              child: Text('3'),
+              child: Text('Memory Game'),
             ),
             InkWell(
               onTap: () {
@@ -153,7 +153,7 @@ class MainLayout extends StatelessWidget {
                   MaterialPageRoute(builder: (context) => EmotionAnalysisScreen()),
                 );
               },
-              child: Text('Emotions'),
+              child: Text('Emotion Recognition'),
             ),
           ],
         ),
